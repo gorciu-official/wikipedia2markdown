@@ -14,8 +14,8 @@ export async function wikipediaArticleExists(t: string): Promise<boolean> {
         const x = await r.text();
 
         if (x.includes('bot-traffic')) {
-            out.warn("Scheduling the check to be completed after 500ms because of ratelimits.");
-            await new Promise((resolve) => setTimeout(resolve, 500));
+            out.warn(`Scheduling the check whether article ${t} exists to be completed after 1s because of ratelimits.`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             return await wikipediaArticleExists(t);
         }
 
