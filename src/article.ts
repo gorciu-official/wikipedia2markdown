@@ -3,7 +3,7 @@ import { wikipediaArticleExists } from "./util/articleExists.ts";
 import { getArticleMarkdown } from "./util/getMarkdown.ts";
 import fs from 'node:fs';
 
-const MAX_CONCURRENT = 5;
+const MAX_CONCURRENT = 2;
 let active = 0;
 const queue: (() => Promise<void>)[] = [];
 
@@ -16,6 +16,7 @@ export async function schedule(task: () => Promise<void>) {
 
     try {
         await task();
+        await new Promise((resolve) => setTimeout(resolve, 2500));
     } finally {
         active--;
         if (queue.length > 0) {

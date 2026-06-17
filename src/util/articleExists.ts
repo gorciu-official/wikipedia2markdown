@@ -1,3 +1,5 @@
+import { out } from "./console.ts";
+
 export async function wikipediaArticleExists(t: string): Promise<boolean> {
     try {
         const u = new URL('https://en.wikipedia.org/w/api.php');
@@ -9,7 +11,15 @@ export async function wikipediaArticleExists(t: string): Promise<boolean> {
         }).toString();
 
         const r = await fetch(u.toString());
-        const d = await r.json();
+        const x = await r.text();
+
+        if (x.includes('bot-traffic')) {
+            out.warn("Scheduling the check to be completed after 500ms because of ratelimits.");
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            return await wikipediaArticleExists(t);
+        }
+
+        const d = JSON.parse(x);
         const p = d.query.pages;
         const k = Object.keys(p)[0];
 
